@@ -1,7 +1,10 @@
+import pandas as pd
 import json
 from views import get_full_report
 from utils import get_transactions_from_excel
 from services import get_cashback_analysis
+from utils import get_transactions_from_excel
+from reports import spending_by_category, spending_summary, spending_by_category_monthly
 
 
 def format_report(report):
@@ -89,3 +92,34 @@ if __name__ == "__main__":
     print("АНАЛИЗ КЕШБЭКА ЗА ДЕКАБРЬ 2021")
     print("=" * 60)
     print(result)
+
+if __name__ == "__main__":
+    transactions_list = get_transactions_from_excel()
+    df = pd.DataFrame(transactions_list)
+
+    print("=" * 60)
+    print("ОТЧЁТЫ ПО КАТЕГОРИЯМ (из данных Excel)")
+    print("=" * 60)
+
+    date = "31.12.2021"
+    category = "Супермаркеты"
+
+    # Транзакции по категории за 3 месяца
+    result = spending_by_category(df, category, date)
+    print(f"\n1. Транзакции по категории '{category}' за 3 месяца до {date}:")
+    print(f"   Найдено транзакций: {len(result)}")
+    if not result.empty:
+        print(result[["Дата операции", "Описание", "Сумма операции"]].head())
+
+    # Сводка по категории
+    summary = spending_summary(df, category, date)
+    print(f"\n2. Сводка по категории '{category}':")
+    print(f"   Период: {summary['period']}")
+    print(f"   Всего потрачено: {summary['total_spent']} руб.")
+    print(f"   Количество транзакций: {summary['transaction_count']}")
+
+    # Ежемесячные траты
+    monthly = spending_by_category_monthly(df, category, date)
+    print(f"\n3. Ежемесячные траты по категории '{category}':")
+    for item in monthly["monthly_spending"]:
+        print(f"   {item['month']}: {item['spent']} руб.")
