@@ -1,8 +1,9 @@
 import json
 import os
-import pandas as pd
 from datetime import datetime, timedelta
 from typing import Optional
+
+import pandas as pd
 
 
 def report_to_file(filename: Optional[str] = None):
@@ -42,7 +43,9 @@ def report_to_file(filename: Optional[str] = None):
 
 
 @report_to_file()
-def spending_by_category(transactions: pd.DataFrame, category: str, date: str) -> pd.DataFrame:
+def spending_by_category(
+    transactions: pd.DataFrame, category: str, date: str
+) -> pd.DataFrame:
     """
     Возвращает траты по заданной категории за последние 3 месяца от указанной даты.
 
@@ -82,12 +85,12 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: str) -
 
     # Фильтруем
     filtered = df[
-        (df["Категория"] == category) &
-        (df["Дата_парс"] >= start_date) &
-        (df["Дата_парс"] <= end_date) &
-        (df["Сумма операции"] < 0) &
-        (df["Статус"] == "OK")
-        ]
+        (df["Категория"] == category)
+        & (df["Дата_парс"] >= start_date)
+        & (df["Дата_парс"] <= end_date)
+        & (df["Сумма операции"] < 0)
+        & (df["Статус"] == "OK")
+    ]
 
     # Удаляем вспомогательную колонку
     filtered = filtered.drop(columns=["Дата_парс"])
@@ -115,7 +118,7 @@ def spending_summary(transactions: pd.DataFrame, category: str, date: str) -> di
             "category": category,
             "period": f"3 месяца до {date}",
             "total_spent": 0,
-            "transaction_count": 0
+            "transaction_count": 0,
         }
 
     total_spent = abs(filtered["Сумма операции"].sum())
@@ -126,12 +129,16 @@ def spending_summary(transactions: pd.DataFrame, category: str, date: str) -> di
         "period": f"3 месяца до {date}",
         "total_spent": round(total_spent, 2),
         "transaction_count": transaction_count,
-        "transactions": filtered[["Дата операции", "Описание", "Сумма операции"]].to_dict(orient="records")
+        "transactions": filtered[
+            ["Дата операции", "Описание", "Сумма операции"]
+        ].to_dict(orient="records"),
     }
 
 
 @report_to_file()
-def spending_by_category_monthly(transactions: pd.DataFrame, category: str, date: str) -> dict:
+def spending_by_category_monthly(
+    transactions: pd.DataFrame, category: str, date: str
+) -> dict:
     """
     Возвращает ежемесячные траты по категории.
 
@@ -149,13 +156,17 @@ def spending_by_category_monthly(transactions: pd.DataFrame, category: str, date
         return {
             "category": category,
             "period": f"3 месяца до {date}",
-            "monthly_spending": []
+            "monthly_spending": [],
         }
 
     # Добавляем колонку с месяцем
     df = filtered.copy()
     df["Месяц"] = df["Дата операции"].apply(
-        lambda x: x.split()[0][3:5] + "." + x.split()[0][6:10] if isinstance(x, str) and len(x) > 0 else ""
+        lambda x: (
+            x.split()[0][3:5] + "." + x.split()[0][6:10]
+            if isinstance(x, str) and len(x) > 0
+            else ""
+        )
     )
 
     monthly = df.groupby("Месяц")["Сумма операции"].sum().abs().round(2)
@@ -166,5 +177,5 @@ def spending_by_category_monthly(transactions: pd.DataFrame, category: str, date
         "monthly_spending": [
             {"month": month, "spent": amount}
             for month, amount in sorted(monthly.items())
-        ]
+        ],
     }
