@@ -10,7 +10,7 @@ from src.views import (
     get_income_data,
     get_currency_rates,
     get_stock_prices,
-    get_full_report
+    get_full_report,
 )
 
 
@@ -18,7 +18,13 @@ def test_get_greeting():
     """Тест: функция возвращает строку."""
     result = get_greeting()
     assert isinstance(result, str)
-    assert result in ["Доброй ночи", "Доброе утро", "Добрый день", "Добрый вечер", "Здравствуйте"]
+    assert result in [
+        "Доброй ночи",
+        "Доброе утро",
+        "Добрый день",
+        "Добрый вечер",
+        "Здравствуйте",
+    ]
 
 
 @patch("views.requests.get")

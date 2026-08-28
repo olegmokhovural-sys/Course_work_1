@@ -27,7 +27,7 @@ def get_exchange_rate(currency):
         "function": "CURRENCY_EXCHANGE_RATE",
         "from_currency": currency,
         "to_currency": "RUB",
-        "apikey": ALPHA_VANTAGE_KEY
+        "apikey": ALPHA_VANTAGE_KEY,
     }
     try:
         response = requests.get(ALPHA_VANTAGE_URL, params=params, timeout=10)
@@ -40,11 +40,7 @@ def get_exchange_rate(currency):
 
 def get_stock_price(symbol):
     """Получает текущую цену акции."""
-    params = {
-        "function": "GLOBAL_QUOTE",
-        "symbol": symbol,
-        "apikey": ALPHA_VANTAGE_KEY
-    }
+    params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": ALPHA_VANTAGE_KEY}
     try:
         response = requests.get(ALPHA_VANTAGE_URL, params=params, timeout=10)
         data = response.json()
@@ -76,7 +72,9 @@ def get_transactions_data():
 def get_expenses_data(expenses):
     """Обрабатывает расходы."""
     # Группируем расходы по категориям
-    expenses_by_category = expenses.groupby("Категория")["Сумма"].sum().round(0).astype(int)
+    expenses_by_category = (
+        expenses.groupby("Категория")["Сумма"].sum().round(0).astype(int)
+    )
 
     # Список категорий для основных расходов (исключаем Переводы и Наличные)
     exclude_categories = ["Переводы", "Наличные"]
@@ -96,7 +94,7 @@ def get_expenses_data(expenses):
     return {
         "total_amount": int(expenses["Сумма"].sum()),
         "main": main_expenses,
-        "transfers_and_cash": transfers_and_cash
+        "transfers_and_cash": transfers_and_cash,
     }
 
 
@@ -112,10 +110,7 @@ def get_income_data(income):
     # Сортируем по убыванию суммы
     income_list.sort(key=lambda x: x["amount"], reverse=True)
 
-    return {
-        "total_amount": int(income["Сумма"].sum()),
-        "main": income_list
-    }
+    return {"total_amount": int(income["Сумма"].sum()), "main": income_list}
 
 
 def get_currency_rates():
@@ -149,5 +144,5 @@ def get_full_report():
         "expenses": get_expenses_data(expenses),
         "income": get_income_data(income),
         "currency_rates": get_currency_rates(),
-        "stock_prices": get_stock_prices()
+        "stock_prices": get_stock_prices(),
     }
