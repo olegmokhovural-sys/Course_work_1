@@ -1,17 +1,12 @@
-import pytest
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
-from src.views import (
-    get_greeting,
-    get_exchange_rate,
-    get_stock_price,
-    get_transactions_data,
-    get_expenses_data,
-    get_income_data,
-    get_currency_rates,
-    get_stock_prices,
-    get_full_report,
-)
+import pytest
+
+from src.views import (get_currency_rates, get_exchange_rate,
+                       get_expenses_data, get_full_report, get_greeting,
+                       get_income_data, get_stock_price, get_stock_prices,
+                       get_transactions_data)
 
 
 def test_get_greeting():

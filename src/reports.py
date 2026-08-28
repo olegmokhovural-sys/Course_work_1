@@ -1,8 +1,9 @@
 import json
 import os
-import pandas as pd
 from datetime import datetime, timedelta
 from typing import Optional
+
+import pandas as pd
 
 
 def report_to_file(filename: Optional[str] = None):

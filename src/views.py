@@ -1,6 +1,8 @@
 import datetime
+
 import pandas as pd
 import requests
+
 from utils import get_transactions_from_excel
 
 ALPHA_VANTAGE_KEY = "1M74RV6J63N0LZ3D"

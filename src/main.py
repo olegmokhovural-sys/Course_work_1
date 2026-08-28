@@ -1,10 +1,12 @@
-import pandas as pd
 import json
-from views import get_full_report
-from utils import get_transactions_from_excel
+
+import pandas as pd
+
+from reports import (spending_by_category, spending_by_category_monthly,
+                     spending_summary)
 from services import get_cashback_analysis
 from utils import get_transactions_from_excel
-from reports import spending_by_category, spending_summary, spending_by_category_monthly
+from views import get_full_report
 
 
 def format_report(report):
